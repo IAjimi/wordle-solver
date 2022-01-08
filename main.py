@@ -1,18 +1,3 @@
-"""
-List of words comes from http://www.mieliestronk.com/corncob_lowercase.txt
-
-This solver's strategy is extremely simple:
-    * pick the first remaining word available as a guess
-    * filter the list of remaining words based on the response given
-        (
-            0 -> the letter isn't in the word
-            1 -> the letter is in the word but in a different position
-            2 -> the letter is in the correct position
-        )
-
-This approach solves > 95% of puzzles for this word list.
-"""
-
 from tqdm import tqdm
 import pandas as pd
 import numpy as np
