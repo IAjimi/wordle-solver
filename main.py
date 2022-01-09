@@ -8,11 +8,11 @@ from constants import (
     NOT_IN_WORD,
     WRONG_POS,
     CORRECT_POS,
-    NOT_IN_WORD_IX,
     CORRECT_WORD,
     MAX_GUESSES,
+    INITIAL_GUESS,
 )
-from utils import get_word_list, create_word_dataframe
+from utils import get_word_list
 
 
 def get_guess_response(word: str, correct_word: str) -> List[int]:
@@ -30,48 +30,53 @@ def get_guess_response(word: str, correct_word: str) -> List[int]:
 
 
 def filter_words(
-    letter: str, guess_pos: int, response: int, word_df: pd.DataFrame
+    letter: str, guess_pos: int, response: int, word_array: np.array
 ) -> pd.DataFrame:
-    """Filter word_df based on one letter response."""
+    """Filter word_array based on one letter response."""
     if response == NOT_IN_WORD:
-        word_df = word_df.loc[word_df[letter] == NOT_IN_WORD_IX]
+        filter_func = np.vectorize(lambda x: letter not in x)
     elif response == WRONG_POS:
-        word_df = word_df.loc[
-            (word_df[letter] != NOT_IN_WORD_IX) & (word_df[letter] != guess_pos)
-        ]
+        filter_func = np.vectorize(lambda x: letter in x and x[guess_pos] != letter)
     elif response == CORRECT_POS:
-        word_df = word_df.loc[word_df[letter] == guess_pos]
+        filter_func = np.vectorize(lambda x: x[guess_pos] == letter)
     else:
-        raise Exception(f"Unknown response: {response}.")
+        raise Exception(f"Unknown response {response}.")
 
-    return word_df
+    filter_bool = filter_func(word_array)
+    return word_array[filter_bool]
 
 
-def process_response(word: str, response_list: List[int], word_df: pd.DataFrame):
+def process_response(word: str, response_list: List[int], word_array: np.array):
     for ix, letter in enumerate(word):
-        word_df = filter_words(letter, ix, response_list[ix], word_df)
-    return word_df
+        word_array = filter_words(letter, ix, response_list[ix], word_array)
+    return word_array
 
 
-def main(word_df: pd.DataFrame, correct_word: str) -> Tuple[bool, int]:
+def main(word_array: np.array, correct_word: str) -> Tuple[bool, int]:
+    guess = INITIAL_GUESS  # hardcoding an initial guess
+
     for attempt in range(MAX_GUESSES):
-        guess = word_df.index[0]  # the first word left in word_df
         guess_response = get_guess_response(guess, correct_word)
         if guess_response == CORRECT_WORD:
             return True, attempt
         else:
-            word_df = process_response(guess, guess_response, word_df)
-            if word_df.empty:
+            word_array = process_response(guess, guess_response, word_array)
+            if len(word_array) == 0:
                 print(f"There are no available words left to guess.")
                 return False, MAX_GUESSES
 
+        guess = word_array[0]
+
     return False, MAX_GUESSES
 
-def simulate_puzzles(word_list: List[str], word_df: pd.DataFrame) -> Tuple[int, List[int]]:
+
+def simulate_puzzles(
+    word_list: List[str], word_array: np.array
+) -> Tuple[int, List[int]]:
     wins = 0
     attempts = []
     for word in tqdm(word_list):
-        w, a = main(word_df, word)
+        w, a = main(word_array, word)
         wins += w
         if w:
             attempts.append(a)
@@ -82,10 +87,10 @@ def simulate_puzzles(word_list: List[str], word_df: pd.DataFrame) -> Tuple[int, 
 if __name__ == "__main__":
     print("Getting word list...")
     word_list = get_word_list("words.txt")
-    word_df = create_word_dataframe(word_list)
 
     print("Simulating solving puzzles...")
-    wins, attempts = simulate_puzzles(word_list, word_df)
+    word_array = np.array(word_list)
+    wins, attempts = simulate_puzzles(word_list, word_array)
 
     print(f"The solver found {wins} correct words out of a list of {len(word_list)}.")
     print(

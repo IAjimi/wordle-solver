@@ -2,8 +2,7 @@ NOT_IN_WORD = 0
 WRONG_POS = 1
 CORRECT_POS = 2
 
-NOT_IN_WORD_IX = -1  # word_df marker for letters not in word
-
+INITIAL_GUESS = "early"  # picked bc many vowels
 
 MAX_GUESSES = 6
 WORD_LENGTH = 5
