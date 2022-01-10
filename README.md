@@ -9,13 +9,13 @@ After each guess, the player receives a response for every letter in their guess
 * Green: the letter is in the correct position
 
 The code is in Python repository solves Wordle-like puzzles with an extremely simple strategy:
-* pick "early" as the 1st guess (a personal heuristic)
+* pick a random word from the list of words as a guess
 * filter the list of remaining words based on the response given
-* subsequently pick the first word available as a guess
+* repeat
 
 using a list of words found at http://www.mieliestronk.com/corncob_lowercase.txt.
 
-It turns out that this approach solves > 90% of puzzles for this word list.
+It turns out that this approach solves > 93% of puzzles for this word list.
 
 Future iterations of this project may attempt to find the word using the least amount of tries possible.
 The project could also be extended to allow people to play the game using the CLI.
