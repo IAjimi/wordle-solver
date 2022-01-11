@@ -3,7 +3,7 @@ import numpy as np
 
 from typing import List, Tuple
 
-from simulatedWordleSolver import simulatedWordleSolver
+from wordleSolver.simulatedWordleSolver import simulatedWordleSolver
 from utils import get_word_list
 
 

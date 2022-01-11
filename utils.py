@@ -1,7 +1,7 @@
 from typing import List
 
 
-from constants import WORD_LENGTH
+from wordleSolver.constants import WORD_LENGTH
 
 
 def get_word_list(filename: str) -> List[str]:

@@ -1,7 +1,7 @@
 from typing import List
 
-from constants import NOT_IN_WORD, CORRECT_POS, WRONG_POS
-from wordleSolver import wordleSolver
+from .constants import NOT_IN_WORD, CORRECT_POS, WRONG_POS
+from .wordleSolver import wordleSolver
 
 
 class simulatedWordleSolver(wordleSolver):

@@ -1,4 +1,4 @@
-from interactiveWordleSolver import interactiveWordleSolver
+from wordleSolver.interactiveWordleSolver import interactiveWordleSolver
 from utils import get_word_list
 
 

@@ -5,14 +5,14 @@ import random
 
 from typing import List, Tuple
 
-from constants import (
+from .constants import (
     NOT_IN_WORD,
     WRONG_POS,
     CORRECT_POS,
     CORRECT_WORD,
     MAX_GUESSES,
 )
-from exceptions import OutOfWords
+from .exceptions import OutOfWords
 
 
 class wordleSolver:
