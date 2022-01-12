@@ -1,5 +1,7 @@
 from typing import List
 
+import numpy as np
+
 from .constants import WORD_LENGTH, NOT_IN_WORD, CORRECT_POS, WRONG_POS
 from .wordleSolver import wordleSolver
 
@@ -8,6 +10,30 @@ class interactiveWordleSolver(wordleSolver):
     def __init__(self, word_list: List[str]):
         super().__init__(word_list, verbose=True)
         self.VALID_INPUTS = [NOT_IN_WORD, WRONG_POS, CORRECT_POS]
+
+    def print_guess_instructions(self, guess: str, APPROVED_GUESS: str, DENIED_GUESS: str) -> None:
+        """Print instructions for users when being proposed a guess."""
+        print(f"Your suggested guess is {guess}.")
+        print(f"Type '{APPROVED_GUESS}' to confirm and '{DENIED_GUESS}' to pick another word.")
+
+    def validate_guess(self, word_array: np.array, guess: str) -> str:
+        """Allows for the user to choose a different guess."""
+        APPROVED_GUESS = "yes"
+        DENIED_GUESS = "no"
+
+        self.print_guess_instructions(guess, APPROVED_GUESS, DENIED_GUESS)
+        confirm = input()
+
+        while confirm != APPROVED_GUESS:
+            if confirm == DENIED_GUESS:
+                guess = self.guess_word(word_array)
+                self.print_guess_instructions(guess, APPROVED_GUESS, DENIED_GUESS)
+                confirm = input()
+            else:
+                self.print_guess_instructions(guess, APPROVED_GUESS, DENIED_GUESS)
+                confirm = input()
+
+        return guess
 
     def print_user_input_instructions(self) -> None:
         print("Enter the puzzle's feedback as follows:")
@@ -20,6 +46,7 @@ class interactiveWordleSolver(wordleSolver):
         )
 
     def get_user_input(self) -> List[int]:
+        """Read and parse user input."""
         response = input()
         parsed_response = [int(i) for i in response if int(i) in self.VALID_INPUTS]
         return parsed_response

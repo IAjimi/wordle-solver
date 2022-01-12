@@ -24,6 +24,10 @@ class wordleSolver:
         """Return guess based on remaining words."""
         return random.choice(word_array)
 
+    def validate_guess(self, word_array: np.array, guess: str) -> str:
+        """Here for interactiveWordleSolver to override."""
+        return guess
+
     def filter_words(
         self, letter: str, guess_pos: int, response: int, word_array: np.array
     ) -> Tuple[np.array, np.array]:
@@ -63,8 +67,7 @@ class wordleSolver:
 
         for attempt in range(MAX_GUESSES):
             guess = self.guess_word(word_array)
-            if self.verbose:
-                print(f"Guess: {guess}")
+            guess = self.validate_guess(word_array, guess)
             guess_response = self.get_guess_response(guess)
             if guess_response == CORRECT_WORD:
                 return True, attempt
